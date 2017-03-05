@@ -1,20 +1,23 @@
-@*
- * This template takes a single argument, a String containing a
- * message to display.
- *@
-@(message: String)
+@(cats: Seq[Cat])
 
-@*
- * Call the `main` template with two arguments. The first
- * argument is a `String` with the title of the page, the second
- * argument is an `Html` object containing the body of the page.
- *@
-@main("Welcome to Play") {
+@main("Cat database") {
+<div>
+ <div id="cats">
+  <h2>Insert a kitty cat here:</h2>
 
-    @*
-     * Get an `Html` object by calling the built-in Play welcome
-     * template and passing a `String` message.
-     *@
-    @play20.welcome(message, style = "Scala")
+  <form action="/insert/cat" method="POST">
+   <input name="name" type="text" placeholder="name your feline friend"/>
+   <input name="color" type="text" placeholder="enter the color of this kitty cat"/>
+   <input type="submit"/>
+  </form>
 
+  <h2>Previously inserted cats:</h2>
+  <table>
+   <tr><th>Name</th><th>Color</th></tr>
+   @for(c <- cats){
+   <tr><td>@c.name</td><td>@c.color</td></tr>
+   }
+  </table>
+ </div>
+</div>
 }
