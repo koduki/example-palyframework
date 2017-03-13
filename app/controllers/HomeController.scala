@@ -2,11 +2,14 @@ package controllers
 
 import javax.inject._
 
+import akka.actor.{ActorSystem, _}
 import dao.CatDAO
-import models.Cat
+import models._
+import play.api.cache.CacheApi
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json.Json
 import play.api.mvc._
 
 /**
@@ -15,9 +18,14 @@ import play.api.mvc._
   */
 
 @Singleton
-class HomeController @Inject()(catDao: CatDAO) extends Controller {
+class HomeController @Inject()(implicit system: ActorSystem, catDao: CatDAO, cache: CacheApi) extends Controller {
 
   def index = Action.async {
+    val actorId = cache.get[String]("actor-id_1").get
+    println(actorId)
+    val client = system.actorSelection(actorId)
+    client ! Json.toJson(EventB("MessageB"))
+
     catDao.all().map {
       cats => Ok(views.html.index(cats))
     }
@@ -28,7 +36,7 @@ class HomeController @Inject()(catDao: CatDAO) extends Controller {
     catDao.insert(cat).map(_ => Redirect(routes.HomeController.index))
   }
 
-  def ws =  Action { request => Ok(views.html.ws()) }
+  def ws = Action { request => Ok(views.html.ws()) }
 
   val catForm = Form(
     mapping(

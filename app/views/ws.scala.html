@@ -5,18 +5,14 @@
 
     ws.onopen = function () {
         console.log("Connecting is success!!");
-        <!--ws.send("Hello world!");-->
     };
 
     ws.onmessage = function (me) {
-        var recievedData = me.data;
-        var msg = "";
-        msg += "Message is exists!!";
-        msg += "recievedData: " + recievedData;
+        var msg = "recievedData: " + me.data;
 
         console.log(msg);
         var view = document.getElementById("message");
-        view.innerHTML += msg;
+        view.innerHTML += "<br />" + msg;
     };
 
     function send(){
@@ -26,9 +22,8 @@
     </script>
     <div id="cats">
         <h2>Hello WebSocket</h2>
+        <input id="input" type="text" value='{"data":"1", "eventType":"a"}' /> <button onclick="send()">Send</button>
         <div id="message"></div>
-
-        <input id="input" type="text" /> <button onclick="send()">Send</button>
     </div>
 </div>
 }
